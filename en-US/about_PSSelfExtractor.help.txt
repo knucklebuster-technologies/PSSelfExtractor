@@ -1,0 +1,23 @@
+TOPIC
+    about_psreleaser
+
+SHORT DESCRIPTION
+    A CI/CR system written in powershell and for module build, test, release cycle.
+
+LONG DESCRIPTION
+    PSReleaser is a Continous Integration / Release system designed for powershell
+    modules. It includes a pluggable task system. Common Tasks are included such as
+    Versioning, Git Commits, Build Assembly, and Zipped Archiving. A Releaser project
+    contains the files *.rlsr.cfg and *.rlsr.lock at the root of the module directory.
+
+EXAMPLES
+    Start-RlsrEngine -Path .\PSReleaser -Name release-alpha-patch
+
+    The main command is Start-RlsrEngine with a Path to the Project directory and a Name
+    of the Project File excluding the extension .rlsr.cfg
+
+KEYWORDS
+    Release, CR, CI
+
+SEE ALSO
+    about_psreleaser_updateversion

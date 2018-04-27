@@ -1,12 +1,10 @@
 
 <#
-	.COMPONENT
-		FPPackager
 	.SYNOPSIS
 		Create a new self extracting zip.
 	.DESCRIPTION
-		This function takes 2 mandatory params path and destination. 
-		Path is the folder structure to turn into SE. 
+		This function takes 2 mandatory params path and destination.
+		Path is the folder structure to turn into SE.
 		Destination is the path to place the SE
 	.PARAMETER  Path
 		the folder or file path of the struture that will generate a SE.
@@ -19,18 +17,10 @@
 		if not provided a default option set is used.
 	.EXAMPLE
 		PS C:\> New-FPSelfExtractor -Path 'C:\Dev\Module\Log' -Destination 'C:\Dev\Packages\Log.exe' -SelfExtractorOption $Options
-	.INPUTS
-		System.String
-		System.String
-		Ionic.Zip.SelfExtractorSaveOptions
-	.OUTPUTS
-		null
 	.NOTES
 		do not write to network paths it will fail. create the SE on the local filesystem then copy out to a drop.
-	.LINK
-		about_FPPackager_walkthru
 #>
-function New-FPSelfExtractor {
+function New-SelfExtractor {
 	[CmdletBinding()]
 	param(
 	[Parameter(Mandatory=$true)]
@@ -40,9 +30,9 @@ function New-FPSelfExtractor {
 	[Ionic.Zip.SelfExtractorSaveOptions]
 	$SelfExtractorOption = $( New-FPSelfExtractorOption )
 	)
-	
+
 	#region Main Body
-	
+
 	try{
 		#validate that the paths passed in are valid for the operation.
 		if( -not ( Test-Path $Path )) {
@@ -64,6 +54,6 @@ function New-FPSelfExtractor {
 	catch{
 		Write-Error "$_ was thrown while creating a self extractor"
 	}
-	
+
 	#endregion
 }

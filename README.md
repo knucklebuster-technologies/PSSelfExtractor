@@ -1,1 +1,1 @@
-# PSScaffolding
+# PSSelfExtractor
