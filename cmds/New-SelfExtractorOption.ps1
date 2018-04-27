@@ -39,10 +39,10 @@ function New-SelfExtractorOption {
 		[string]
 		$Copyright = "(c) $(( Get-Date ).Year ) PSSelfExtractor",
 
-		[Parameter(Mandatory, HelpMessage="The default extraction path")]
+		[Parameter(HelpMessage="The default extraction path")]
 		[ValidateNotNullOrEmpty()]
 		[string]
-		$DefaultExtractDirectory,
+		$DefaultExtractDirectory = 'C:\',
 
 		[Parameter(HelpMessage="A description of the extractor")]
 		[string]
