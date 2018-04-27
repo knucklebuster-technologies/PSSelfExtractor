@@ -13,8 +13,7 @@
 		the Destination path to write the SE.
 		The path needs to include the filename to be created SomeSE.exe
 	.PARAMETER SelfExtractorOption
-		Ionic.Zip.SelfExtractorSaveOptions object like that returned by New-FPSelfExtractorOption.
-		if not provided a default option set is used.
+		Ionic.Zip.SelfExtractorSaveOptions object like that returned by New-SelfExtractorOption.
 	.EXAMPLE
 		PS C:\> New-FPSelfExtractor -Path 'C:\Dev\Module\Log' -Destination 'C:\Dev\Packages\Log.exe' -SelfExtractorOption $Options
 	.NOTES
@@ -23,37 +22,39 @@
 function New-SelfExtractor {
 	[CmdletBinding()]
 	param(
-	[Parameter(Mandatory=$true)]
+	[Parameter(Mandatory)]
+	[ValidateNotNullOrEmpty()]
+	[ValidateScript({
+		if( Test-Path $PSItem ) { return $true }
+		throw "The path $PSItem does not exist"
+	})]
+	[string]
 	$Path,
-	[Parameter(Mandatory=$true)]
+
+	[Parameter(Mandatory)]
+	[ValidateNotNullOrEmpty()]
+	[ValidateScript({
+		if ("$PSItem".EndsWith('.exe')) { return $true }
+		throw 'The Destination must include the file name ending with .exe'
+	})]
+	[string]
 	$Destination,
+
+	[Parameter(Mandatory)]
+	[ValidateNotNull()]
 	[Ionic.Zip.SelfExtractorSaveOptions]
-	$SelfExtractorOption = $( New-FPSelfExtractorOption )
+	$SelfExtractorOption
 	)
 
-	#region Main Body
-
-	try{
-		#validate that the paths passed in are valid for the operation.
-		if( -not ( Test-Path $Path )) {
-			throw "The path $Path does not exist"
-		}
-		#create a zip archive and add the items in the path
-		if( -not ( Test-Path ( Split-Path $Destination -Parent ))) {
-			[System.IO.Directory]::CreateDirectory("$( Split-Path $Destination -Parent )")
-		}
-		$Zip = New-Object Ionic.Zip.ZipFile
-		$Zip.AddItem("$Path","")
-		#if the destination SE is already there remove old
-		if( Test-Path "$Destination" ){
-			Remove-Item "$Destination" -Force
-		}
-		#create the SE
-		$Zip.SaveSelfExtractor("$Destination", $SelfExtractorOption)
+	$DestDir = Split-Path $Destination -Parent
+	if( -not ( Test-Path $DestDir)) {
+		[System.IO.Directory]::CreateDirectory($DestDir)
 	}
-	catch{
-		Write-Error "$_ was thrown while creating a self extractor"
+	if( Test-Path "$Destination" ){
+		Remove-Item "$Destination" -Force
 	}
 
-	#endregion
+	$Zip = New-Object Ionic.Zip.ZipFile
+	$Zip.AddItem("$Path")
+	$Zip.SaveSelfExtractor("$Destination", $SelfExtractorOption)
 }
